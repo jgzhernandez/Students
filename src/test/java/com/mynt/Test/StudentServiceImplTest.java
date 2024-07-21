@@ -47,17 +47,20 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    public void getAll(){
+    public void testGetAll(){
         when(studentRepositoryMock.findAll()).thenReturn(sampleStudents);
         List<Student> studentsOutputs = studentService.getAllStudent();
+
         assertEquals(2, studentsOutputs.size());
         assertEquals(sampleStudents, studentsOutputs);
+        verify(studentRepositoryMock, times(1)).findAll();
     }
 
     @Test
-    public void getById(){
+    public void testGetById(){
         when(studentRepositoryMock.findById(1L)).thenReturn(Optional.of(mockStudent1));
         Student idOutput = studentService.getStudentById(1L);
+
         assertEquals(mockStudent1, idOutput);
         verify(studentRepositoryMock, times(2)).findById(1L);
     }
@@ -65,18 +68,29 @@ public class StudentServiceImplTest {
     @Test
     public void testSave(){
         when(studentRepositoryMock.save(any(Student.class))).thenReturn(new Student());
+
         assertNotNull(studentService.saveStudent(new Student()));
+        verify(studentRepositoryMock, times(1)).save(any(Student.class));
     }
 
     @Test
     public void testDelete(){
-        studentService.deleteStudent(1L);
-        verify(studentRepositoryMock).deleteById(1L);
+        String deleteString = studentService.deleteStudent(1L);
+
+        assertEquals("User deleted with ID: 1", deleteString);
+        verify(studentRepositoryMock).deleteById(anyLong());
     }
 
     @Test
     public void testUpdate(){
-        ;
+        when(studentRepositoryMock.findById(1L)).thenReturn(Optional.of(mockStudent1));
+        when(studentRepositoryMock.save(any(Student.class))).thenReturn(mockStudent1);
+
+        mockStudent1.setName("NewName");
+        studentService.updateStudent(1L,mockStudent1);
+        assertEquals("NewName",mockStudent1.getName());
+        verify(studentRepositoryMock, times(1)).findById(anyLong());
+        verify(studentRepositoryMock, times(1)).save(any(Student.class));
     }
 
     @Test

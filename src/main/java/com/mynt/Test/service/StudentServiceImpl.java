@@ -19,8 +19,6 @@ public class StudentServiceImpl implements StudentService{
         List<Student> students = new ArrayList<>();
         studentRepository.findAll().forEach(students::add);
         return students;
-//        List<String> list = Arrays.asList("John Doe", "Jane Smith", "Kevin White");
-//        return studentRepository.findByNameIn(list);
     }
 
     @Override
