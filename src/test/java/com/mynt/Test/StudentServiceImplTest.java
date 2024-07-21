@@ -76,6 +76,7 @@ public class StudentServiceImplTest {
     @Test
     public void testDelete(){
         String deleteString = studentService.deleteStudent(1L);
+        System.out.println(deleteString);
 
         assertEquals("User deleted with ID: 1", deleteString);
         verify(studentRepositoryMock).deleteById(anyLong());
@@ -95,6 +96,11 @@ public class StudentServiceImplTest {
 
     @Test
     public void testGetByAgeAndEmail(){
-        ;
+        when(studentRepositoryMock.findAll()).thenReturn(sampleStudents);
+        List<Student> filteredStudents = studentService.getStudentByAgeAndEmail(24, "jett@example.com");
+
+        assertEquals(1, filteredStudents.size());
+        assertEquals("Jett", filteredStudents.get(0).getName());
+        verify(studentRepositoryMock, times(1)).findAll();
     }
 }
